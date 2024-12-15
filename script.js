@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Perguntas com as opções de respostas e número da etapa
+
     const questions = [
         { question: "Compartilhe seus hábitos sustentáveis e práticas ambientais em casa e no cotidiano", type: "text", etapa: 1 },
         { question: "1. Com que frequência você recicla lixo?", answers: ["Sempre", "Com boa frequência", "Raramente", "nunca"], etapa: 1 },
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { question: "14. Utiliza transporte público?", answers: ["Sempre", "Às vezes", "Nunca", "Quando possível"], etapa: 1 },
         { question: "15. Planeja suas compras para evitar desperdício?", answers: ["Sim", "Não", "Às vezes", "Quando necessário"], etapa: 1 },
 
-        // Etapa 2: Perguntas sobre Viagens e Sustentabilidade
+    
         { question: "Na etapa 2, compartilhe seus hábitos relacionados às compras", answers: ["Nenhuma", "1-3", "Mais de 3", "Uma vez a cada dois anos"], etapa: 2 },
         { question: "16. Quantas vezes você viaja de avião por ano?", answers: ["Nenhuma", "1-3", "Mais de 3", "Uma vez a cada dois anos"], etapa: 2 },
         { question: "17. Você compartilha caronas?", answers: ["Sempre", "Às vezes", "Nunca", "Compartilho com amigos"], etapa: 2 },
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { question: "29. Planeja itinerários para economizar combustível?", answers: ["Sempre", "Às vezes", "Nunca", "Quando necessário"], etapa: 2 },
         { question: "30. Prefere turismo ecológico?", answers: ["Sim", "Não", "Às vezes", "Se for uma opção boa"], etapa: 2 },
 
-        // Etapa 3: Perguntas sobre Consumo e Sustentabilidade
+    
         { question: "Na etapa 3, compartilhe seus hábitos relacionados ao consumo consciente", answers: ["Nenhuma", "1-3", "Mais de 3", "Uma vez a cada dois anos"], etapa: 3 },
         { question: "31. Você pratica agricultura urbana ou jardina?", answers: ["Sempre", "Às vezes", "Nunca", "Quero aprender"], etapa: 3 },
         { question: "32. Utiliza produtos biodegradáveis?", answers: ["Sempre", "Às vezes", "Nunca", "Quando consigo encontrar"], etapa: 3 },
@@ -57,40 +57,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
     let currentQuestionIndex = 0;
-    let currentEtapa = 1; // Controle inicial da etapa
+    let currentEtapa = 1;
 
-    // Seletores de elementos HTML
+
     const questionTitle = document.getElementById("question-title");
     const questionDescription = document.getElementById("question-description");
     const answersContainer = document.getElementById("answers-container");
     const nextBtn = document.getElementById("next-btn");
     const currentStep = document.getElementById("current-step");
-    const etapaNotification = document.getElementById("etapa-notification"); // Notificação de etapa
+    const etapaNotification = document.getElementById("etapa-notification");
 
-    // Função para carregar uma nova pergunta
+
     function loadQuestion(index) {
         const question = questions[index];
         questionTitle.textContent = question.question;
-        questionDescription.textContent = ""; // Limpa a descrição
-        answersContainer.innerHTML = ""; // Limpa as respostas anteriores
+        questionDescription.textContent = "";
+        answersContainer.innerHTML = "";
 
-        // Verifica mudança de etapa
+    
         if (question.etapa !== currentEtapa) {
             currentEtapa = question.etapa;
-            notifyNewEtapa(currentEtapa); // Notifica mudança de etapa
+            notifyNewEtapa(currentEtapa);
         }
 
-        // Adiciona a interação para a pergunta inicial (sem respostas)
+    
         if (question.answers.length === 0) {
             const hoverBox = document.createElement("div");
             hoverBox.textContent = "Passe o mouse aqui para continuar";
             hoverBox.classList.add("hover-box");
             hoverBox.addEventListener("mouseover", () => {
-                nextBtn.disabled = false; // Libera o botão "Próxima Pergunta"
+                nextBtn.disabled = false;
             });
             answersContainer.appendChild(hoverBox);
         } else {
-            // Adiciona os botões de resposta
+        
             question.answers.forEach(answer => {
                 const button = document.createElement("button");
                 button.textContent = answer;
@@ -101,40 +101,40 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Função para notificar nova etapa
+
     function notifyNewEtapa(etapa) {
-        etapaNotification.textContent = `Bem-vindo à Etapa ${etapa}!`; // Mostra a mensagem
-        etapaNotification.style.display = "block"; // Exibe o elemento
+        etapaNotification.textContent = `Bem-vindo à Etapa ${etapa}!`;
+        etapaNotification.style.display = "block";
         setTimeout(() => {
-            etapaNotification.style.display = "none"; // Oculta a mensagem após 3 segundos
+            etapaNotification.style.display = "none";
         }, 3000);
     }
 
-    // Função para lidar com a seleção de resposta
+
     function handleAnswerSelection(button) {
-        // Remove a seleção de todas as respostas
+    
         document.querySelectorAll('.answer-btn').forEach(btn => {
             if (btn.classList.contains("selected")) {
                 btn.classList.remove("selected");
             }
         });
 
-        // Marca a resposta selecionada
+    
         button.classList.add("selected");
-        nextBtn.disabled = false; // Habilita o botão "Próxima Pergunta"
+        nextBtn.disabled = false;
     }
 
-    // Função para passar para a próxima pergunta
+
     nextBtn.addEventListener("click", () => {
         if (currentQuestionIndex < questions.length - 1) {
             currentQuestionIndex++;
             loadQuestion(currentQuestionIndex);
-            nextBtn.disabled = true; // Desativa o botão até uma nova resposta ser selecionada
+            nextBtn.disabled = true;
         } else {
             alert("Você completou o quiz!");
         }
     });
 
-    // Inicializa com a primeira pergunta
+
     loadQuestion(currentQuestionIndex);
 });
