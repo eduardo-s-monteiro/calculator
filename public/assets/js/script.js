@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     const questions = [
         { question: "Compartilhe seus hábitos sustentáveis e práticas ambientais em casa e no cotidiano", type: "text", etapa: 1 },
         { question: "1. Com que frequência você recicla lixo?", answers: ["Sempre", "Com boa frequência", "Raramente", "nunca"], etapa: 1 },
@@ -17,9 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { question: "13. Economiza água?", answers: ["Sempre", "Às vezes", "Nunca", "Quando lembro"], etapa: 1 },
         { question: "14. Utiliza transporte público?", answers: ["Sempre", "Às vezes", "Nunca", "Quando possível"], etapa: 1 },
         { question: "15. Planeja suas compras para evitar desperdício?", answers: ["Sim", "Não", "Às vezes", "Quando necessário"], etapa: 1 },
-
-    
-        { question: "Na etapa 2, compartilhe seus hábitos relacionados às compras", answers: ["Nenhuma", "1-3", "Mais de 3", "Uma vez a cada dois anos"], etapa: 2 },
+        { question: "Na etapa 2, compartilhe seus hábitos relacionados às compras", etapa: 2 },
         { question: "16. Quantas vezes você viaja de avião por ano?", answers: ["Nenhuma", "1-3", "Mais de 3", "Uma vez a cada dois anos"], etapa: 2 },
         { question: "17. Você compartilha caronas?", answers: ["Sempre", "Às vezes", "Nunca", "Compartilho com amigos"], etapa: 2 },
         { question: "18. Prefere transporte público em viagens?", answers: ["Sempre", "Às vezes", "Nunca", "Quando possível"], etapa: 2 },
@@ -35,9 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { question: "28. Escolhe viagens com menos impacto ambiental?", answers: ["Sempre", "Às vezes", "Nunca", "Depende da opção"], etapa: 2 },
         { question: "29. Planeja itinerários para economizar combustível?", answers: ["Sempre", "Às vezes", "Nunca", "Quando necessário"], etapa: 2 },
         { question: "30. Prefere turismo ecológico?", answers: ["Sim", "Não", "Às vezes", "Se for uma opção boa"], etapa: 2 },
-
-    
-        { question: "Na etapa 3, compartilhe seus hábitos relacionados ao consumo consciente", answers: ["Nenhuma", "1-3", "Mais de 3", "Uma vez a cada dois anos"], etapa: 3 },
+        { question: "Na etapa 3, compartilhe seus hábitos relacionados ao consumo consciente", etapa: 3 },
         { question: "31. Você pratica agricultura urbana ou jardina?", answers: ["Sempre", "Às vezes", "Nunca", "Quero aprender"], etapa: 3 },
         { question: "32. Utiliza produtos biodegradáveis?", answers: ["Sempre", "Às vezes", "Nunca", "Quando consigo encontrar"], etapa: 3 },
         { question: "33. Consome alimentos orgânicos?", answers: ["Sempre", "Às vezes", "Nunca", "Às vezes tento"], etapa: 3 },
@@ -55,86 +50,92 @@ document.addEventListener("DOMContentLoaded", () => {
         { question: "45. Você tenta reduzir a pegada de carbono ao escolher o modo de transporte no dia a dia?", answers: ["Sempre", "Às vezes", "Nunca", "Quando é possível"], etapa: 3 }
     ];
 
-    
+    const elements = {
+        questionTitle: document.getElementById("question-title"),
+        questionDescription: document.getElementById("question-description"),
+        answersContainer: document.getElementById("answers-container"),
+        nextBtn: document.getElementById("next-btn"),
+        currentStep: document.getElementById("current-step"),
+        etapaNotification: document.getElementById("etapa-notification")
+    };
+
     let currentQuestionIndex = 0;
     let currentEtapa = 1;
 
-
-    const questionTitle = document.getElementById("question-title");
-    const questionDescription = document.getElementById("question-description");
-    const answersContainer = document.getElementById("answers-container");
-    const nextBtn = document.getElementById("next-btn");
-    const currentStep = document.getElementById("current-step");
-    const etapaNotification = document.getElementById("etapa-notification");
-
-
     function loadQuestion(index) {
         const question = questions[index];
-        questionTitle.textContent = question.question;
-        questionDescription.textContent = "";
-        answersContainer.innerHTML = "";
-
-    
+        updateQuestionUI(question);
         if (question.etapa !== currentEtapa) {
             currentEtapa = question.etapa;
             notifyNewEtapa(currentEtapa);
+            elements.currentStep.textContent = currentEtapa;
         }
+        renderAnswers(question);
+    }
 
-    
-        if (question.answers.length === 0) {
-            const hoverBox = document.createElement("div");
-            hoverBox.textContent = "Passe o mouse aqui para continuar";
-            hoverBox.classList.add("hover-box");
-            hoverBox.addEventListener("mouseover", () => {
-                nextBtn.disabled = false;
-            });
-            answersContainer.appendChild(hoverBox);
+    function updateQuestionUI(question) {
+        elements.questionTitle.textContent = question.question;
+        elements.questionDescription.textContent = "";
+        elements.answersContainer.innerHTML = "";
+    }
+
+    function renderAnswers(question) {
+        if (!question.answers || question.answers.length === 0) {
+            createHoverBox();
         } else {
-        
             question.answers.forEach(answer => {
-                const button = document.createElement("button");
-                button.textContent = answer;
-                button.classList.add("answer-btn");
-                button.addEventListener("click", () => handleAnswerSelection(button));
-                answersContainer.appendChild(button);
+                const button = createAnswerButton(answer);
+                elements.answersContainer.appendChild(button);
             });
         }
     }
+    function createAnswerButton(answer) {
+        const button = document.createElement("button");
+        button.textContent = answer;
+        button.classList.add("answer-btn");
+        button.addEventListener("click", () => handleAnswerSelection(button));
+        return button;
+    }
 
+    function createHoverBox() {
+        const hoverBox = document.createElement("div");
+        hoverBox.textContent = "Passe o mouse aqui para continuar";
+        hoverBox.classList.add("hover-box");
+        hoverBox.addEventListener("mouseover", () => {
+            elements.nextBtn.disabled = false;
+        });
+        elements.answersContainer.appendChild(hoverBox);
+    }
 
     function notifyNewEtapa(etapa) {
-        etapaNotification.textContent = `Bem-vindo à Etapa ${etapa}!`;
-        etapaNotification.style.display = "block";
+        elements.etapaNotification.textContent = `Bem-vindo à Etapa ${etapa}!`;
+        elements.etapaNotification.style.display = "block";
         setTimeout(() => {
-            etapaNotification.style.display = "none";
+            elements.etapaNotification.style.display = "none";
         }, 3000);
     }
 
-
-    function handleAnswerSelection(button) {
-    
-        document.querySelectorAll('.answer-btn').forEach(btn => {
-            if (btn.classList.contains("selected")) {
-                btn.classList.remove("selected");
-            }
-        });
-
-    
-        button.classList.add("selected");
-        nextBtn.disabled = false;
+    function handleAnswerSelection(selectedButton) {
+        deselectAllButtons();
+        selectedButton.classList.add("selected");
+        elements.nextBtn.disabled = false;
     }
 
+    function deselectAllButtons() {
+        document.querySelectorAll(".answer-btn").forEach(button => {
+            button.classList.remove("selected");
+        });
+    }
 
-    nextBtn.addEventListener("click", () => {
+    elements.nextBtn.addEventListener("click", () => {
         if (currentQuestionIndex < questions.length - 1) {
             currentQuestionIndex++;
             loadQuestion(currentQuestionIndex);
-            nextBtn.disabled = true;
+            elements.nextBtn.disabled = true;
         } else {
             alert("Você completou o quiz!");
         }
     });
-
 
     loadQuestion(currentQuestionIndex);
 });
